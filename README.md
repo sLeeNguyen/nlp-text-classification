@@ -1,6 +1,6 @@
 # PhoBERT text classification
 
-This project performs fine-turning [PhoBERT](https://github.com/VinAIResearch/PhoBERT) for text classification using [VNTC dataset](https://github.com/duyvuleo/VNTC).
+This project performs fine-tuning [PhoBERT](https://github.com/VinAIResearch/PhoBERT) for text classification using [VNTC dataset](https://github.com/duyvuleo/VNTC).
 
 **Reference**
 
