@@ -37,3 +37,5 @@ INFO:     Started reloader process [10564] using WatchFiles
 ```
 
 Open browser and navigate to `http://127.0.0.1:8000/docs` (Swagger UI). Now, we can test the model via api.
+
+<img src='./example.png' />
