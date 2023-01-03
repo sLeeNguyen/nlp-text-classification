@@ -33,7 +33,7 @@ class TextClassifier():
         self.__model.to(DEVICE)
         self.__model.register_classification_head('new_task', num_classes=10)
         self.__model.load_state_dict(torch.load(
-            os.path.join('model', 'model_3.bin'), map_location=DEVICE))
+            os.path.join('model', 'model_both.bin'), map_location=DEVICE))
 
         class BPE():
             bpe_codes = 'PhoBERT_base_fairseq/bpe.codes'
@@ -54,16 +54,17 @@ class TextClassifier():
         text_tokenized = ' '.join([
             ' '.join(sent) for sent in self.__rdrsegmenter.tokenize(text)
         ])
-        bpe_sentence = '<s> ' + self.__bpe.encode(text_tokenized) + ' <s>'
+        bpe_sentence = '<s> ' + self.__bpe.encode(text_tokenized) + ' </s>'
         tokens = self.__vocab.encode_line(
             bpe_sentence, append_eos=False, add_if_not_exist=False)
-        # Index cac token cls (đầu câu), eos (cuối câu), padding (padding token)
-        # cls_id = 0
+
         eos_id = 2
         pad_id = 1
+        cls_id = 0
         if len(tokens) > self.max_seq_len:
-            tokens = tokens[:self.max_seq_len]
-            tokens[-1] = eos_id
+            input_ids = input_ids[:64] + input_ids[-(self.max_seq_len - 64):]
+            input_ids[0] = cls_id
+            input_ids[-1] = eos_id
         else:
             tokens = torch.cat((tokens, torch.tensor(
                 [pad_id, ] * (self.max_seq_len - len(tokens)))))
