@@ -5,7 +5,7 @@ from fastapi import FastAPI
 
 from nlp_model import TextClassifier
 
-classifier = TextClassifier()
+classifier = TextClassifier(model_path='model/model_both.bin', label_encoder_path='model/labelEncoder.pkl')
 app = FastAPI(description='NLP classification service')
 
 

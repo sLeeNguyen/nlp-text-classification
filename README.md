@@ -28,13 +28,9 @@ make setup  # install libraries
 make dev    # run server in development
 ```
 
-Server will be running on `http://127.0.0.1:8000`
+*Note*: Create `model/` directory and place your trained model and `labelEncoder.pkl` inside. You also need to update `model_path` and `label_encoder_path` when creating `TextClassifier` instance in `main.py`.
 
-```
-INFO:     Will watch for changes in these directories: ['/Users/leenguyen/Desktop/nlp/nlp-server']
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [10564] using WatchFiles
-```
+Server will be running on `http://127.0.0.1:8000`.
 
 Open browser and navigate to `http://127.0.0.1:8000/docs` (Swagger UI). Now, we can test the model via api.
 
