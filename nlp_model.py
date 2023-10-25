@@ -56,19 +56,18 @@ class TextClassifier():
         ])
         bpe_sentence = '<s> ' + self.__bpe.encode(text_tokenized) + ' </s>'
         tokens = self.__vocab.encode_line(
-            bpe_sentence, append_eos=False, add_if_not_exist=False)
+            bpe_sentence, append_eos=False, add_if_not_exist=False).long().tolist()
 
         eos_id = 2
         pad_id = 1
         cls_id = 0
         if len(tokens) > self.max_seq_len:
-            input_ids = input_ids[:64] + input_ids[-(self.max_seq_len - 64):]
-            input_ids[0] = cls_id
-            input_ids[-1] = eos_id
+            tokens = tokens[:64] + tokens[-(self.max_seq_len - 64):]
+            tokens[0] = cls_id
+            tokens[-1] = eos_id
         else:
-            tokens = torch.cat((tokens, torch.tensor(
-                [pad_id, ] * (self.max_seq_len - len(tokens)))))
-        return tokens.long()
+            tokens = tokens + [pad_id, ] * (self.max_seq_len - len(tokens))
+        return torch.LongTensor(tokens)
 
     def predict(self, text):
         self.__model.eval()
@@ -80,12 +79,7 @@ class TextClassifier():
 
 if __name__ == '__main__':
     text = '''
-        Rụng lông mi nhiều Tôi 32 tuổi, sức khỏe bình thường. Mấy tháng gần đây lông mi ở mắt rất hay rụng. \
-        Mỗi lần rửa mặt chạm trúng lông mi lại rụng vài sợi. Xin bác sĩ cho biết tôi có bệnh gì không, có ảnh \
-        hưởng đến sức khỏe không? Một bạn đọc (TPHCM)- Bác sĩ Phạm Thị Bích Thủy, Bệnh viện Mắt TPHCM, trả lời: \
-        Lông mi rụng nhiều và thường xuyên có thể là triệu chứng của viêm bờ mi. Bệnh có nhiều nguyên nhân như \
-        nấm, mắt hột, dị ứng... Bạn nên đến cơ sở có chuyên khoa mắt để được bác sĩ khám trực tiếp, cho thuốc \
-        điều trị và tư vấn cách chăm sóc vệ sinh mắt.
+        Thứ trưởng Văn hóa: Tặng quà Tết không nên nặng giá trị vật chất Theo bà Trịnh Thị Thủy, tặng quà dịp Tết là nét văn hóa tốt đẹp của người Việt Nam, mang giá trị tinh thần chứ không nên nặng về vật chất. Chiều 3/1, tại họp báo Chính phủ thường kỳ, Thứ trưởng Văn hóa Thể thao và Du lịch Trịnh Thị Thủy nêu quan điểm, Tết luôn có giá trị thiêng liêng trong tâm thức người dân Việt Nam. Truyền thống tặng quà, biếu quà dịp Tết thể hiện tấm lòng thành kính với bề trên, người cao tuổi, người giúp đỡ mình trong cuộc sống. Thời gian tới, Bộ Văn hóa Thể thao và Du lịch sẽ tăng cường truyền thông để người dân nhận thức đúng giá trị của văn hóa tặng quà Tết, từ đó thực hành đúng. Ngày 23/12/2022, Thủ tướng ban hành chỉ thị về tăng cường các biện pháp đón Tết Nguyên đán Quý Mão 2023 vui tươi, lành mạnh, an toàn, tiết kiệm. Các cơ quan trong hệ thống hành chính nhà nước thực hiện nghiêm việc không tổ chức đi thăm, chúc Tết cấp trên và lãnh đạo các cấp; không tổ chức đoàn của Trung ương thăm, chúc Tết cấp ủy, chính quyền các tỉnh, thành phố; nghiêm cấm biếu, tặng quà Tết cho lãnh đạo các cấp dưới mọi hình thức; không sử dụng ngân sách nhà nước, phương tiện, tài sản công trái quy định; không tham gia các hoạt động mê tín, dị đoan; chỉ dự lễ chùa, lễ hội khi được phân công. Người đứng đầu Chính phủ yêu cầu các địa phương tổ chức tốt việc thăm hỏi, chúc Tết thương binh, gia đình liệt sĩ, gia đình có công với nước, cán bộ lão thành cách mạng, mẹ Việt Nam anh hùng, nhân sĩ, trí thức, người có uy tín trong đồng bào dân tộc thiểu số, chức sắc tôn giáo tiêu biểu, các đơn vị lực lượng vũ trang, lực lượng thường trực làm nhiệm vụ trong ngày Tết, nhất là ở biên giới, hải đảo, vùng khó khăn. Bên cạnh đó, các bộ ngành, địa phương phải thực hiện tốt chính sách an sinh, xã hội, phát huy truyền thống đại đoàn kết, tinh thần tương thân, tương ái của dân tộc; chăm lo đời sống của vật chất và tinh thần của nhân dân, bảo đảm mọi người đều có điều kiện vui xuân, đón Tết.
     '''
     classifier = TextClassifier()
     print(classifier.predict(text))
